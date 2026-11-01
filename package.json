@@ -4,6 +4,10 @@
     "description": "",
     "main": "webpack.base.config.js",
     "scripts": {
+        "lint": "eslint . --ext .ts",
+        "lint:fix": "eslint . --ext .ts --fix",
+        "typecheck": "tsc --noEmit",
+        "format": "prettier --write \"src/**/*.{ts,css,html}\"",
         "start": "webpack serve --open --config ./webpack.config.js --env mode=dev",
         "start:local": "webpack serve --open --config ./webpack.config.js --env mode=dev --env envFile=.env.local",
         "build": "webpack --config ./webpack.config.js --env mode=prod --env envFile=.env.production",
