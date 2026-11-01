@@ -5,11 +5,9 @@
     "main": "webpack.base.config.js",
     "scripts": {
         "start": "webpack serve --open --config ./webpack.config.js --env mode=dev",
-        "build": "webpack --config ./webpack.config.js --env mode=prod",
-        "lint": "eslint . --ext .ts",
-        "lint:fix": "eslint . --ext .ts --fix",
-        "typecheck": "tsc --noEmit",
-        "format": "prettier --write \"src/**/*.{ts,css,html}\"",
+        "start:local": "webpack serve --open --config ./webpack.config.js --env mode=dev --env envFile=.env.local",
+        "build": "webpack --config ./webpack.config.js --env mode=prod --env envFile=.env.production",
+        "build:local": "webpack --config ./webpack.config.js --env mode=prod --env envFile=.env.local",
         "deploy": "npm run build && gh-pages -d dist"
     },
     "repository": {
