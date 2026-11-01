@@ -1,20 +1,33 @@
+import { SourcePreview } from '../../../types/interfaces';
+import { getElement, getTemplateFragment } from '../../../utils/dom';
 import './sources.css';
 
+/**
+ * Renders the source buttons into the `.sources` container.
+ *
+ * Each button keeps the source id in `data-source-id`, which the controller
+ * reads when the user clicks it.
+ */
 class Sources {
-    draw(data) {
+    /**
+     * Replaces the current buttons with the given sources.
+     *
+     * @param data - sources returned by the `/sources` endpoint
+     */
+    public draw(data: ReadonlyArray<SourcePreview>): void {
+        const container = getElement<HTMLElement>('.sources');
         const fragment = document.createDocumentFragment();
-        const sourceItemTemp = document.querySelector('#sourceItemTemp');
 
-        data.forEach((item) => {
-            const sourceClone = sourceItemTemp.content.cloneNode(true);
+        data.forEach((item: SourcePreview): void => {
+            const button = getTemplateFragment('#sourceItemTemp');
 
-            sourceClone.querySelector('.source__item-name').textContent = item.name;
-            sourceClone.querySelector('.source__item').setAttribute('data-source-id', item.id);
+            getElement<HTMLElement>('.source__item-name', button).textContent = item.name;
+            getElement<HTMLElement>('.source__item', button).dataset.sourceId = item.id;
 
-            fragment.append(sourceClone);
+            fragment.append(button);
         });
 
-        document.querySelector('.sources').append(fragment);
+        container.append(fragment);
     }
 }
 

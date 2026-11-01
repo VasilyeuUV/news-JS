@@ -1,37 +1,66 @@
+import { Article, ArticleLink } from '../../../types/interfaces';
+import { getElement, getTemplateFragment } from '../../../utils/dom';
+import { formatDate } from '../../../utils/format';
 import './news.css';
 
+/**
+ * Renders news cards into the `.news` container.
+ *
+ * Only the first ten articles are shown: the API returns far more, but the page
+ * is not meant to be an endless feed.
+ */
 class News {
-    draw(data) {
-        const news = data.length >= 10 ? data.filter((_item, idx) => idx < 10) : data;
-
+    /**
+     * Replaces the current list with the given articles.
+     *
+     * @param data - articles returned by the `/everything` endpoint
+     */
+    public draw(data: ReadonlyArray<Article>): void {
+        const news = data.length >= 10 ? data.filter((_item: Article, index: number): boolean => index < 10) : data;
+        const container = getElement<HTMLElement>('.news');
         const fragment = document.createDocumentFragment();
-        const newsItemTemp = document.querySelector('#newsItemTemp');
 
-        news.forEach((item, idx) => {
-            const newsClone = newsItemTemp.content.cloneNode(true);
+        news.forEach((item: Article, index: number): void => {
+            const card = getTemplateFragment('#newsItemTemp');
+            const cardItem = getElement<HTMLElement>('.news__item', card);
 
-            if (idx % 2) newsClone.querySelector('.news__item').classList.add('alt');
+            if (index % 2) {
+                cardItem.classList.add('alt');
+            }
 
-            newsClone.querySelector('.news__meta-photo').style.backgroundImage = `url(${
-                item.urlToImage || 'img/news_placeholder.jpg'
-            })`;
-            newsClone.querySelector('.news__meta-author').textContent = item.author || item.source.name;
-            newsClone.querySelector('.news__meta-date').textContent = item.publishedAt
-                .slice(0, 10)
-                .split('-')
-                .reverse()
-                .join('-');
+            const photo = getElement<HTMLElement>('.news__meta-photo', card);
 
-            newsClone.querySelector('.news__description-title').textContent = item.title;
-            newsClone.querySelector('.news__description-source').textContent = item.source.name;
-            newsClone.querySelector('.news__description-content').textContent = item.description;
-            newsClone.querySelector('.news__read-more a').setAttribute('href', item.url);
+            if (item.urlToImage) {
+                photo.style.backgroundImage = `url(${item.urlToImage})`;
+            }
 
-            fragment.append(newsClone);
+            getElement<HTMLElement>('.news__meta-author', card).textContent = item.author ?? item.source.name;
+            getElement<HTMLElement>('.news__meta-date', card).textContent = formatDate(item.publishedAt);
+
+            getElement<HTMLElement>('.news__description-title', card).textContent = item.title;
+            getElement<HTMLElement>('.news__description-source', card).textContent = item.source.name;
+            getElement<HTMLElement>('.news__description-content', card).textContent = item.description;
+
+            this.setReadMoreLink(card, item);
+
+            fragment.append(card);
         });
 
-        document.querySelector('.news').innerHTML = '';
-        document.querySelector('.news').appendChild(fragment);
+        container.innerHTML = '';
+        container.append(fragment);
+    }
+
+    /**
+     * Points the "Read More" link of the card to the original article.
+     *
+     * @param card - fragment with the rendered card
+     * @param article - article the link should lead to
+     */
+    private setReadMoreLink(card: DocumentFragment, article: ArticleLink): void {
+        const link = getElement<HTMLAnchorElement>('.news__read-more a', card);
+
+        link.href = article.url;
+        link.title = article.title;
     }
 }
 
