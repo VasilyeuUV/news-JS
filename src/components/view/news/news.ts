@@ -3,6 +3,9 @@ import { getElement, getTemplateFragment } from '../../../utils/dom';
 import { formatDate } from '../../../utils/format';
 import './news.css';
 
+/** How many articles are rendered at once; the API is asked for the same number. */
+const MAX_ARTICLES = 10;
+
 /**
  * Renders news cards into the `.news` container.
  *
@@ -16,7 +19,7 @@ class News {
      * @param data - articles returned by the `/everything` endpoint
      */
     public draw(data: ReadonlyArray<Article>): void {
-        const news = data.length >= 10 ? data.filter((_item: Article, index: number): boolean => index < 10) : data;
+        const news = data.slice(0, MAX_ARTICLES);
         const container = getElement<HTMLElement>('.news');
         const fragment = document.createDocumentFragment();
 
