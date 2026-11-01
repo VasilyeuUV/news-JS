@@ -36,7 +36,10 @@ class AppController extends AppLoader {
         }
 
         newsContainer.dataset.source = sourceId;
-        const options = { sources: sourceId };
+        newsContainer.querySelectorAll<HTMLElement>('.source__item').forEach((item: HTMLElement): void => {
+            item.classList.toggle('source__item--active', item === sourceItem);
+        });
+        const options = { sources: sourceId, pageSize: '10' };
 
         super.getResp<EverythingResponse>({ endpoint: Endpoint.EVERYTHING, options }, callback);
     }

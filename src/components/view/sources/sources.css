@@ -40,6 +40,12 @@
     white-space: nowrap;
 }
 
+.source__item--active {
+    border-color: #3fcc59;
+    color: #69db7e;
+    background: rgba(63, 204, 89, 0.08);
+}
+
 @media (min-width: 768px) {
     .sources {
         position: sticky;
