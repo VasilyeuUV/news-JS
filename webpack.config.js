@@ -4,11 +4,16 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const DotenvWebpackPlugin = require('dotenv-webpack');
 
-const baseConfig = {
-    entry: path.resolve(__dirname, './src/index.js'),
+const buildBaseConfig = (envFile) => ({
+    entry: path.resolve(__dirname, './src/index.ts'),
     mode: 'development',
     module: {
         rules: [
+            {
+                test: /\.ts$/i,
+                use: 'ts-loader',
+                exclude: /node_modules/,
+            },
             {
                 test: /\.css$/i,
                 use: ['style-loader', 'css-loader'],
@@ -16,25 +21,26 @@ const baseConfig = {
         ],
     },
     resolve: {
-        extensions: ['.js'],
+        extensions: ['.ts', '.js'],
     },
     output: {
         filename: 'index.js',
         path: path.resolve(__dirname, './dist'),
     },
     plugins: [
-        new DotenvWebpackPlugin(),
+        new DotenvWebpackPlugin({ path: path.resolve(__dirname, envFile) }),
         new HtmlWebpackPlugin({
             template: path.resolve(__dirname, './src/index.html'),
             filename: 'index.html',
+            favicon: path.resolve(__dirname, './src/assets/favicon.svg'),
         }),
         new CleanWebpackPlugin(),
     ],
-};
+});
 
-module.exports = ({ mode }) => {
+module.exports = ({ mode, envFile = '.env.development' }) => {
     const isProductionMode = mode === 'prod';
     const envConfig = isProductionMode ? require('./webpack.prod.config') : require('./webpack.dev.config');
 
-    return merge(baseConfig, envConfig);
+    return merge(buildBaseConfig(envFile), envConfig);
 };

@@ -1,35 +1,98 @@
+:root {
+    --bg: #17181c;
+    --accent: #5ad67d;
+    --text: #e9ecf1;
+    --muted: #9aa0aa;
+    --content-max: 1400px;
+}
+
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}
+
 body {
-    color: #fff;
-    background: #17181c;
-    font-family: sans-serif;
+    margin: 0;
+    min-width: 320px;
+    color: var(--text);
+    background: var(--bg);
+    font-family: system-ui, 'Segoe UI', Roboto, Arial, sans-serif;
+    line-height: 1.5;
 }
 
-header {
-    padding: 10px 30px;
+.site-header,
+main,
+.site-footer {
+    width: 100%;
+    max-width: var(--content-max);
+    margin-inline: auto;
+    padding-inline: 16px;
 }
 
-header h1 {
-    font-size: 40px;
+.site-header h1 {
+    margin: 16px 0 4px;
+    font-size: clamp(1.5rem, 6vw, 2.5rem);
     font-weight: 800;
+    line-height: 1.15;
 }
 
-footer {
-    height: 100px;
+main {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 16px;
+    padding-bottom: 24px;
+}
+
+.site-footer {
     display: flex;
+    flex-wrap: wrap;
     align-items: center;
     justify-content: center;
-}
-footer .copyright {
+    gap: 10px 24px;
+    min-height: 96px;
+    padding-block: 20px;
+    border-top: 1px solid #2b2f38;
     font-size: 14px;
-    color: #333;
-    text-align: center;
+    color: var(--muted);
 }
-footer .copyright a {
-    color: #444;
+
+.site-footer a {
+    color: inherit;
+    text-decoration: none;
+    transition: color 0.2s;
 }
-footer .copyright a:hover {
-    color: #555;
+
+.site-footer a:hover,
+.site-footer a:focus-visible {
+    color: var(--accent);
 }
-footer .copyright:before {
-    content: '©';
+
+.site-footer__logo {
+    display: block;
+    width: 48px;
+    height: 48px;
+    padding: 4px;
+    background: #fff;
+    border-radius: 50%;
+}
+
+@media (min-width: 768px) {
+    main {
+        grid-template-columns: 260px minmax(0, 1fr);
+        align-items: start;
+        gap: 24px;
+    }
+}
+
+@media (min-width: 1440px) {
+    .site-header,
+    main,
+    .site-footer {
+        padding-inline: 32px;
+    }
+
+    main {
+        grid-template-columns: 300px minmax(0, 1fr);
+    }
 }

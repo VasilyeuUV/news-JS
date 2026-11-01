@@ -1,13 +1,19 @@
 {
-    "plugins": ["prettier", "import"],
-    "extends": [
-        "plugin:prettier/recommended",
-        "prettier"
-    ],
+    "root": true,
+    "parser": "@typescript-eslint/parser",
     "parserOptions": {
         "ecmaVersion": 2020,
         "sourceType": "module"
     },
+    "plugins": [
+        "prettier",
+        "import",
+        "@typescript-eslint"
+    ],
+    "extends": [
+        "plugin:@typescript-eslint/recommended",
+        "plugin:prettier/recommended"
+    ],
     "env": {
         "es6": true,
         "browser": true,
@@ -15,7 +21,22 @@
     },
     "rules": {
         "no-debugger": "off",
-        "no-console": 0,
-        "class-methods-use-this": "off"
-    }
+        "no-console": ["error", { "allow": ["error"] }],
+        "class-methods-use-this": "off",
+        "@typescript-eslint/no-explicit-any": "error",
+        "@typescript-eslint/explicit-member-accessibility": [
+            "error",
+            {
+                "accessibility": "explicit",
+                "overrides": {
+                    "constructors": "off"
+                }
+            }
+        ]
+    },
+    "ignorePatterns": [
+        "dist",
+        "node_modules",
+        "webpack*.js"
+    ]
 }
