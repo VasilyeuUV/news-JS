@@ -40,7 +40,7 @@ class Loader {
     protected errorHandler(res: Response): Response {
         if (!res.ok) {
             if (res.status === HttpStatus.UNAUTHORIZED || res.status === HttpStatus.NOT_FOUND) {
-                console.log(`Sorry, but there is ${res.status} error: ${res.statusText}`);
+                console.error(`Sorry, but there is ${res.status} error: ${res.statusText}`);
             }
 
             throw new Error(res.statusText);
