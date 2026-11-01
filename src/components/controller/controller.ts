@@ -1,38 +1,44 @@
+import { Endpoint } from '../../types/enums';
+import { EverythingResponse, SourcesResponse } from '../../types/interfaces';
+import { Callback } from '../../types/types';
 import AppLoader from './appLoader';
 
+/**
+ * Application controller: turns user actions into News API requests.
+ */
 class AppController extends AppLoader {
-    getSources(callback) {
-        super.getResp(
-            {
-                endpoint: 'sources',
-            },
-            callback
-        );
+    /**
+     * Requests the list of available news sources.
+     * @param callback - receives the `/sources` response
+     */
+    public getSources(callback: Callback<SourcesResponse>): void {
+        super.getResp<SourcesResponse>({ endpoint: Endpoint.SOURCES }, callback);
     }
 
-    getNews(e, callback) {
-        let target = e.target;
-        const newsContainer = e.currentTarget;
+    /**
+     * Requests articles of the source that was clicked.
+     * @param event - click event delegated from the sources container
+     * @param callback - receives the `/everything` response
+     */
+    public getNews(event: MouseEvent, callback: Callback<EverythingResponse>): void {
+        const newsContainer = event.currentTarget as HTMLElement;
+        const target = event.target as HTMLElement | null;
+        const sourceItem = target?.closest<HTMLElement>('.source__item');
 
-        while (target !== newsContainer) {
-            if (target.classList.contains('source__item')) {
-                const sourceId = target.getAttribute('data-source-id');
-                if (newsContainer.getAttribute('data-source') !== sourceId) {
-                    newsContainer.setAttribute('data-source', sourceId);
-                    super.getResp(
-                        {
-                            endpoint: 'everything',
-                            options: {
-                                sources: sourceId,
-                            },
-                        },
-                        callback
-                    );
-                }
-                return;
-            }
-            target = target.parentNode;
+        if (!sourceItem || !newsContainer.contains(sourceItem)) {
+            return;
         }
+
+        const sourceId = sourceItem.dataset.sourceId;
+
+        if (!sourceId || newsContainer.dataset.source === sourceId) {
+            return;
+        }
+
+        newsContainer.dataset.source = sourceId;
+        const options = { sources: sourceId };
+
+        super.getResp<EverythingResponse>({ endpoint: Endpoint.EVERYTHING, options }, callback);
     }
 }
 
